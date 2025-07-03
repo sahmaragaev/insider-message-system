@@ -1,0 +1,77 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_DSN=${DATABASE_DSN}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - WEBHOOK_AUTH_KEY=${WEBHOOK_AUTH_KEY}
+      - SCHEDULER_AUTO_START=${SCHEDULER_AUTO_START}
+      - SCHEDULER_INTERVAL=${SCHEDULER_INTERVAL}
+      - SCHEDULER_BATCH_SIZE=${SCHEDULER_BATCH_SIZE}
+      - CIRCUIT_BREAKER_ENABLED=${CIRCUIT_BREAKER_ENABLED:-true}
+      - CIRCUIT_BREAKER_FAILURE_RATE=${CIRCUIT_BREAKER_FAILURE_RATE:-0.5}
+      - CIRCUIT_BREAKER_MIN_REQUESTS=${CIRCUIT_BREAKER_MIN_REQUESTS:-10}
+      - CIRCUIT_BREAKER_HALF_OPEN_AFTER=${CIRCUIT_BREAKER_HALF_OPEN_AFTER:-30s}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - insider-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - insider-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - insider-network
+
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=${ADMINER_DEFAULT_SERVER}
+    depends_on:
+      - postgres
+    networks:
+      - insider-network
+
+networks:
+  insider-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

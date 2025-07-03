@@ -1,0 +1,256 @@
+basePath: /api
+definitions:
+  apidocs.ErrorData:
+    properties:
+      code:
+        example: VALIDATION_ERROR
+        type: string
+      details:
+        example: Invalid request parameters
+        type: string
+    type: object
+  apidocs.ErrorResponse:
+    properties:
+      data:
+        $ref: '#/definitions/apidocs.ErrorData'
+      msg:
+        example: Validation failed
+        type: string
+      status:
+        example: false
+        type: boolean
+    type: object
+  apidocs.MessageCreatedResponse:
+    properties:
+      data:
+        $ref: '#/definitions/apidocs.MessageData'
+      msg:
+        example: Message created successfully
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  apidocs.MessageData:
+    properties:
+      content:
+        example: Insider - Project
+        type: string
+      created_at:
+        example: "2024-01-15T10:30:00Z"
+        type: string
+      failure_reason:
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      message_id:
+        example: msg_123456
+        type: string
+      sent_at:
+        example: "2024-01-15T10:35:00Z"
+        type: string
+      status:
+        example: pending
+        type: string
+      to:
+        example: "+905551111111"
+        type: string
+    type: object
+  apidocs.MessagesListData:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/apidocs.MessageData'
+        type: array
+      pagination:
+        $ref: '#/definitions/pagination.PaginationInfo'
+    type: object
+  apidocs.MessagesListResponse:
+    properties:
+      data:
+        $ref: '#/definitions/apidocs.MessagesListData'
+      msg:
+        example: Request processed successfully
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  apidocs.SchedulerData:
+    properties:
+      message:
+        example: Scheduler started successfully
+        type: string
+      status:
+        example: running
+        type: string
+    type: object
+  apidocs.SchedulerResponse:
+    properties:
+      data:
+        $ref: '#/definitions/apidocs.SchedulerData'
+      msg:
+        example: Scheduler started successfully
+        type: string
+      status:
+        example: true
+        type: boolean
+    type: object
+  domain.MessageRequest:
+    properties:
+      content:
+        example: Insider - Project
+        maxLength: 160
+        type: string
+      to:
+        example: "+905551111111"
+        type: string
+    required:
+    - content
+    - to
+    type: object
+  pagination.PaginationInfo:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Automatic message sending system
+  title: Insider Message System API
+  version: "1.0"
+paths:
+  /v1/messages:
+    post:
+      consumes:
+      - application/json
+      description: Add a new message to the queue for sending
+      parameters:
+      - description: Message data
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/domain.MessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/apidocs.MessageCreatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+      summary: Create a new message
+      tags:
+      - messages
+  /v1/messages/sent:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of sent messages
+      parameters:
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apidocs.MessagesListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+      summary: Get sent messages
+      tags:
+      - messages
+  /v1/scheduler/start:
+    post:
+      consumes:
+      - application/json
+      description: Start automatic message sending process
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apidocs.SchedulerResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+      summary: Start the message scheduler
+      tags:
+      - scheduler
+  /v1/scheduler/status:
+    get:
+      consumes:
+      - application/json
+      description: Get current status of the message scheduler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apidocs.SchedulerResponse'
+      summary: Get scheduler status
+      tags:
+      - scheduler
+  /v1/scheduler/stop:
+    post:
+      consumes:
+      - application/json
+      description: Stop automatic message sending process
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apidocs.SchedulerResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apidocs.ErrorResponse'
+      summary: Stop the message scheduler
+      tags:
+      - scheduler
+swagger: "2.0"

@@ -1,0 +1,53 @@
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Configuration files
+config.yaml
+config.json
+
+# Test files
+coverage.out
+coverage.html
+
+# Build artifacts
+main
+bin/
+dist/
+build/
+
+# Development tools
+Makefile
+air.toml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if any)
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Scripts
+scripts/
+
+# Development database
+*.db
+*.sqlite
+*.sqlite3

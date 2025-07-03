@@ -1,0 +1,93 @@
+# Git and version control
+.git/
+.gitignore
+.gitattributes
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Environment and configuration files
+.env
+.env.*
+!.env.example
+config.yaml
+config.json
+example.config.yaml
+
+# Test files and coverage
+*_test.go
+coverage.out
+coverage.html
+*.test
+
+# Build artifacts and binaries
+main
+bin/
+dist/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Development tools and scripts
+Makefile
+air.toml
+scripts/
+deploy.sh
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Node modules (if any)
+node_modules/
+
+# Go specific
+vendor/
+*.prof
+*.trace
+
+# Backup files
+*.bak
+*.backup

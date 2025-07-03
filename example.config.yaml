@@ -1,0 +1,41 @@
+server:
+  port: 8080
+  host: 0.0.0.0
+  read_timeout: 30s
+  write_timeout: 30s
+
+database:
+  driver: postgres
+  dsn: postgres://user:password@localhost:5432/insider_messages?sslmode=disable
+  max_open_connections: 25
+  max_idle_connections: 5
+  conn_max_lifetime: 15m
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+
+webhook:
+  url: https://sahmar.org/webhook
+  auth_key: your_auth_key # I did not implement auth, so it will work with any key
+  timeout: 30s
+
+scheduler:
+  interval: 2m
+  batch_size: 2
+  max_retries: 3
+  retry_delay: 5s
+  auto_start: true
+
+logger:
+  level: info
+  format: json
+  output_path: stdout
+
+circuit_breaker:
+  enabled: true
+  failure_rate: 0.5
+  min_requests: 10
+  half_open_after: 30s
